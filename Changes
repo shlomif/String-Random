@@ -1,20 +1,42 @@
 Revision history for Perl extension String::Random.
 
-0.1   Thu Sep 10 10:35:12 CDT 1998
-	- original version
+0.20    - Added support for *, +, and ? in regular expressions.
 
-0.19  Sun Jul  4 19:20:03 CDT 1999
-        - first pass of regex support
+0.1992  - Added support for {n,m} ranges in regular expressions.
+        - Cleaned up the initialization of @punct.
 
-0.195 Wed Jul  7 20:42:34 CDT 1999
-        - regex support is (at least mostly) complete
+0.1991  - Added a "b" for random binary data in randpattern().
+
+0.199 
+	- fixed randregex() and randpattern() to Do The Right
+	  Thing(TM) when called in an array or scalar context, and
+	  when passed multiple arguments
+	  (* WARNING *  This is an incompatible change.  Code
+	  expecting the behavior of earlier versions may break.  Of
+	  course, the documentation warned that this change would be
+	  made, and everybody reads documentation, right?  :-)
+	- fixed use of $_ in randpattern()
+	  (Unfortunately, there's still one use of $_ in a grep(), but
+	  I don't see how that can be avoided, and it only happens
+	  once on initialization.)
+
+0.198 Tue May 16 11:15:44 CDT 2000
+	- fixed \W generating "_"
+	- reorganized a bit to make it easier to add more patterns
+	- added \s and \S
+	- added two-character literals (\t, \n, \r, \f, \a, \e)
 
 0.197 Sat Jul 10 10:50:13 CDT 1999
         - moved most of randregex() to %regch
         - added random_regex() function interface
 
-0.198 Tue May 16 11:15:44 2000
-	- Fixed \W generating "_"
-	- Reorganized a bit to make it easier to add more patterns
-	- Added \s and \S
-	- Added two-character literals (\t, \n, \r, \f, \a, \e)
+0.195 Wed Jul  7 20:42:34 CDT 1999
+        - regex support is (at least mostly) complete
+
+0.19  Sun Jul  4 19:20:03 CDT 1999
+        - first pass of regex support
+
+0.1   Thu Sep 10 10:35:12 CDT 1998
+	- original version
+
+$Id: Changes,v 1.8 2003/09/29 20:33:02 steve Exp $

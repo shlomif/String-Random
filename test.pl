@@ -118,13 +118,15 @@ print "ok 11\n";
 
 # 12: Test regex support
 @patterns=('\d\d\d', '\w\w\w', '[ABC][abc]', '[012][345]', '...', '[a-z][0-9]',
-           '[aw-zX][123]', '[a-z]{5}', '0{80}', '[a-f][nprt]\d{3}');
+           '[aw-zX][123]', '[a-z]{5}', '0{80}', '[a-f][nprt]\d{3}',
+           '\t\n\r\f\a\e');
 for (@patterns)
 {
-    if ($foo->randregex($_)!~/^$_$/)
+    my $ret=$foo->randregex($_);
+    if ($ret !~ /^$_$/)
     {
 	$failed12++;
-	print "'$_' failed.\n" if ($ENV{VERBOSE});
+	print "'$_' failed, '$ret' does not match.\n" if ($ENV{VERBOSE});
     }
 }
 if ($failed12)

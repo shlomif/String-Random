@@ -12,3 +12,9 @@ Revision history for Perl extension String::Random.
 0.197 Sat Jul 10 10:50:13 CDT 1999
         - moved most of randregex() to %regch
         - added random_regex() function interface
+
+0.198 Tue May 16 11:15:44 2000
+	- Fixed \W generating "_"
+	- Reorganized a bit to make it easier to add more patterns
+	- Added \s and \S
+	- Added two-character literals (\t, \n, \r, \f, \a, \e)

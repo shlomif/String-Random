@@ -8,7 +8,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
-# $Id: Random.pm,v 1.9 1999/07/10 15:53:25 steve Exp $
+# $Id: Random.pm,v 1.10 2000/05/16 16:23:42 steve Exp $
 
 package String::Random;
 
@@ -19,7 +19,7 @@ use Exporter ();
 
 @ISA = qw(Exporter);
 @EXPORT_OK = qw(random_string random_regex);
-$VERSION = '0.197';
+$VERSION = '0.198';
 
 use Carp;
 
@@ -35,18 +35,30 @@ push(@punct, "#", ","); # To avoid warnings when using -w
 @salt=(@upper, @lower, @digit, ".", "/");
 
 # What's important is how they relate to the pattern characters.
-# This could be done with anonymous array references,
-# but I tend to think that this is much more readable.
-%patterns = ( 'C' => \@upper,
-              'c' => \@lower,
-              'n' => \@digit,
-              '!' => \@punct,
-              '.' => \@any,
-              's' => \@salt,
-              "\\d" => \@digit,
-              "\\D" => [@upper, @lower, @punct],
-              "\\w" => [@upper, @lower, @digit, "_"],
-              "\\W" => \@punct
+%patterns = (
+	      # These are the old patterns for randpattern/random_string.
+	      'C' => [ @upper ],
+              'c' => [ @lower ],
+              'n' => [ @digit ],
+              '!' => [ @punct ],
+              '.' => [ @any ],
+              's' => [ @salt ],
+
+	      # These are the regex-equivalents.
+              '\d' => [ @digit ],
+              '\D' => [ @upper, @lower, @punct ],
+              '\w' => [ @upper, @lower, @digit, "_" ],
+              '\W' => [ grep { $_ ne "_" } @punct ],
+              '\s' => [ " ", "\t" ], # Would anything else make sense?
+              '\S' => [ @upper, @lower, @digit, @punct ],
+
+	      # These are translated to their double quoted equivalents.
+	      '\t' => [ "\t" ],
+	      '\n' => [ "\n" ],
+	      '\r' => [ "\r" ],
+	      '\f' => [ "\f" ],
+	      '\a' => [ "\a" ],
+	      '\e' => [ "\e" ],
             );
 
 # These characters are treated specially in randregex().
@@ -58,17 +70,7 @@ push(@punct, "#", ","); # To avoid warnings when using -w
                {
                    my $tmp=shift(@{$chars});
                    #print STDERR "\$tmp=\"$tmp\"\n"; # Debugging.
-                   if ($tmp=~/[A-CE-VX-Za-ce-vyz89]/)
-                   {
-                       carp "'\\$tmp' being treated as literal '$tmp'";
-                       push(@{$string}, [$tmp]);
-                   }
-                   elsif ($tmp=~/[DWdw]/)
-                   {
-                       $ch.=$tmp;
-                       push(@{$string}, $self->{$ch});
-                   }
-                   elsif ($tmp eq "x")
+                   if ($tmp eq "x")
                    {
                        # This is supposed to be a number in hex, so
                        # there had better be at least 2 characters left.
@@ -80,10 +82,25 @@ push(@punct, "#", ","); # To avoid warnings when using -w
                        carp "octal parsing not implemented.  treating literally.";
                        push(@{$string}, [$tmp]);
                    }
+                   elsif (defined($patterns{"\\$tmp"}))
+                   {
+                       $ch.=$tmp;
+                       push(@{$string}, $self->{$ch});
+                   }
                    else
                    {
+                       carp "'\\$tmp' being treated as literal '$tmp'";
                        push(@{$string}, [$tmp]);
                    }
+
+		   # I originally had a fall-through to this.  It looks bogus,
+		   # since all cases should have been caught above.  If nothing
+		   # obvious breaks in the next version, I'll remove it.
+		   #
+                   #else
+                   #{
+                   #    push(@{$string}, [$tmp]);
+                   #}
                }
                else
                {

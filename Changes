@@ -8,3 +8,7 @@ Revision history for Perl extension String::Random.
 
 0.195 Wed Jul  7 20:42:34 CDT 1999
         - regex support is (at least mostly) complete
+
+0.197 Sat Jul 10 10:50:13 CDT 1999
+        - moved most of randregex() to %regch
+        - added random_regex() function interface

@@ -6,7 +6,7 @@
 # Change 1..1 below to 1..last_test_to_print .
 # (It may become useful if the test is moved to ./t subdirectory.)
 
-BEGIN { $| = 1; print "1..11\n"; }
+BEGIN { $| = 1; print "1..13\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use String::Random;
 $loaded = 1;
@@ -30,7 +30,7 @@ if (!defined($foo) || !defined($bar))
 }
 print "ok 2\n";
 
-# 3: Test function interface
+# 3: Test function interface to randpattern()
 $abc=String::Random::random_string("012", ['a'], ['b'], ['c']);
 if ($abc ne 'abc')
 {
@@ -52,23 +52,31 @@ $foo->{'x'}=['a'];
 $foo->{'y'}=['b'];
 $foo->{'z'}=['c'];
 # 5: passing a scalar, in a scalar context
-$abc=$foo->from_pattern("xyz");
+$abc=$foo->randpattern("xyz");
 if ($abc ne 'abc')
 {
     print "not ";
     $failed++;
 }
 print "ok 5\n";
-# 6: passing a list, in a scalar context
-$abc=$foo->from_pattern(qw(x y z));
+# 6: Make sure the from_pattern() interface still works
+$abc=$foo->from_pattern("xyz");
 if ($abc ne 'abc')
 {
     print "not ";
     $failed++;
 }
 print "ok 6\n";
+# 7: passing a list, in a scalar context
+$abc=$foo->randpattern(qw(x y z));
+if ($abc ne 'abc')
+{
+    print "not ";
+    $failed++;
+}
+print "ok 7\n";
 
-# 7: Check one of the built-in patterns to make
+# 8: Check one of the built-in patterns to make
 # sure it contains what we think it should
 @upcase=("A".."Z");
 for ($n=0;$n<26;$n++)
@@ -80,50 +88,58 @@ for ($n=0;$n<26;$n++)
 	last;
     }
 }
-print "ok 7\n";
-
-# 8: Test modifying one of the built-in patterns
-$foo->{'C'}=['n'];
-if ($foo->from_pattern("C") ne "n")
-{
-    print "not ";
-    $failed++;
-}
 print "ok 8\n";
 
-# 9: Make sure we haven't clobbered anything in an existing object
-if ($bar->from_pattern("C") eq "n")
+# 9: Test modifying one of the built-in patterns
+$foo->{'C'}=['n'];
+if ($foo->randpattern("C") ne "n")
 {
     print "not ";
     $failed++;
 }
 print "ok 9\n";
 
-# 10: Make sure we haven't clobbered anything in a new object
-$baz=new String::Random;
-if (!defined($baz) || ($baz->from_pattern("C") eq "n"))
+# 10: Make sure we haven't clobbered anything in an existing object
+if ($bar->randpattern("C") eq "n")
 {
     print "not ";
     $failed++;
 }
 print "ok 10\n";
 
-# 11: Test regex support
+# 11: Make sure we haven't clobbered anything in a new object
+$baz=new String::Random;
+if (!defined($baz) || ($baz->randpattern("C") eq "n"))
+{
+    print "not ";
+    $failed++;
+}
+print "ok 11\n";
+
+# 12: Test regex support
 @patterns=('\d\d\d', '\w\w\w', '[ABC][abc]', '[012][345]', '...', '[a-z][0-9]',
            '[aw-zX][123]', '[a-z]{5}', '0{80}', '[a-f][nprt]\d{3}');
 for (@patterns)
 {
     if ($foo->randregex($_)!~/^$_$/)
     {
-	$failed11++;
+	$failed12++;
 	print "'$_' failed.\n" if ($ENV{VERBOSE});
     }
 }
-if ($failed11)
+if ($failed12)
 {
     print "not ";
     $failed++;
 }
-print "ok 11\n";
+print "ok 12\n";
+
+# 13: Test function interface to randregex()
+if (String::Random::random_regex("[a][b][c]") ne "abc")
+{
+    print "not ";
+    $failed++;
+}
+print "ok 13\n";
 
 exit $failed;

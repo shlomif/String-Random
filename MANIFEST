@@ -4,3 +4,4 @@ Makefile.PL
 Random.pm
 test.pl
 TODO
+README

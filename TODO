@@ -1,4 +1,16 @@
+FEATURES:
+* (foo|bar) should be doable.
+* {$n,$m} should be doable too.
+* If there was a variable, maybe $MAX_REPETITION, * could be
+  implemented as {0,$MAX_REPETITION}, and + could be implemented as
+  {1,$MAX_REPETITION}.  (I guess I question whether or not this would
+  actually be useful, but if it isn't too hard to implement {$n,$m},
+  this should be trivial.)
+
+BUGS:
 * All functions should do the right then when called in a list or
   scalar context.
 * All functions should do the right then when passed either a list or
   a scalar (see last item).
+* "use String::Random qw(random_string random_regex);" appears to not
+  actually import anything.

@@ -1,0 +1,10 @@
+Revision history for Perl extension String::Random.
+
+0.1   Thu Sep 10 10:35:12 CDT 1998
+	- original version
+
+0.19  Sun Jul  4 19:20:03 CDT 1999
+        - first pass of regex support
+
+0.195 Wed Jul  7 20:42:34 CDT 1999
+        - regex support is (at least mostly) complete

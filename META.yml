@@ -1,0 +1,14 @@
+---
+name: String-Random
+version: 0.21
+author:
+  - Steven Pritchard <steve@silug.org>
+abstract: Perl module to generate random strings based on a pattern
+license: perl
+requires:
+  Test::More: 0
+provides:
+  String::Random:
+    file: lib/String/Random.pm
+    version: 0.21
+generated_by: Module::Build version 0.2611

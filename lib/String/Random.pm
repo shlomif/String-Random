@@ -1,5 +1,5 @@
 # String::Random - Generates a random string from a pattern
-# Copyright (C) 1999-2002 Steven Pritchard <steve@silug.org>
+# Copyright (C) 1999-2006 Steven Pritchard <steve@silug.org>
 #
 # This program is free software; you can redistribute it
 # and/or modify it under the same terms as Perl itself.
@@ -8,18 +8,20 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
-# $Id: Random.pm,v 1.18 2003/09/29 20:33:02 steve Exp $
+# $Id: Random.pm,v 1.3 2006/04/20 22:09:35 steve Exp $
 
 package String::Random;
 
 use strict;
+use warnings;
+
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
 
 use Exporter ();
 
 @ISA = qw(Exporter);
 @EXPORT_OK = qw(random_string random_regex);
-$VERSION = '0.20';
+$VERSION = '0.21';
 
 use Carp;
 
@@ -69,61 +71,43 @@ use vars qw(%old_patterns %patterns %regch);
 
 # These characters are treated specially in randregex().
 %regch = (
-   "\\" => sub
-           {
+   "\\" => sub {
                my ($self, $ch, $chars, $string)=@_;
-               if (@{$chars})
-               {
+               if (@{$chars}) {
                    my $tmp=shift(@{$chars});
-                   if ($tmp eq "x")
-                   {
+                   if ($tmp eq "x") {
                        # This is supposed to be a number in hex, so
                        # there had better be at least 2 characters left.
                        $tmp=shift(@{$chars}) . shift(@{$chars});
                        push(@{$string}, [chr(hex($tmp))]);
-                   }
-                   elsif ($tmp=~/[0-7]/)
-                   {
+                   } elsif ($tmp=~/[0-7]/) {
                        carp "octal parsing not implemented.  treating literally.";
                        push(@{$string}, [$tmp]);
-                   }
-                   elsif (defined($patterns{"\\$tmp"}))
-                   {
+                   } elsif (defined($patterns{"\\$tmp"})) {
                        $ch.=$tmp;
                        push(@{$string}, $patterns{$ch});
-                   }
-                   else
-                   {
+                   } else {
                        carp "'\\$tmp' being treated as literal '$tmp'";
                        push(@{$string}, [$tmp]);
                    }
-               }
-               else
-               {
+               } else {
                    croak "regex not terminated";
                }
            },
-    '.' => sub
-           {
+    '.' => sub {
                my ($self, $ch, $chars, $string)=@_;
-	       push(@{$string}, $patterns{$ch});
+               push(@{$string}, $patterns{$ch});
            },
-    '[' => sub
-           {
+    '[' => sub {
                my ($self, $ch, $chars, $string)=@_;
                my @tmp;
-               while (defined($ch=shift(@{$chars})) && ($ch ne "]"))
-               {
-                   if (($ch eq "-") && @{$chars} && @tmp)
-                   {
+               while (defined($ch=shift(@{$chars})) && ($ch ne "]")) {
+                   if (($ch eq "-") && @{$chars} && @tmp) {
                        $ch=shift(@{$chars});
-                       for (my $n=ord($tmp[$#tmp]);$n<ord($ch);$n++)
-                       {
+                       for (my $n=ord($tmp[$#tmp]);$n<ord($ch);$n++) {
                            push(@tmp, chr($n+1));
                        }
-                   }
-                   else
-                   {
+                   } else {
                        carp "'$ch' will be treated literally inside []"
                            if ($ch=~/\W/);
                        push(@tmp, $ch);
@@ -132,85 +116,63 @@ use vars qw(%old_patterns %patterns %regch);
                croak "unmatched []" if ($ch ne "]");
                push(@{$string}, \@tmp);
            },
-    '*' => sub
-           {
-	       my ($self, $ch, $chars, $string)=@_;
-	       unshift(@{$chars}, split("", "{0,}"));
-	   },
-    '+' => sub
-           {
-	       my ($self, $ch, $chars, $string)=@_;
-	       unshift(@{$chars}, split("", "{1,}"));
-	   },
-    '?' => sub
-           {
-	       my ($self, $ch, $chars, $string)=@_;
-	       unshift(@{$chars}, split("", "{0,1}"));
-	   },
-    '{' => sub
-           {
+    '*' => sub {
+               my ($self, $ch, $chars, $string)=@_;
+               unshift(@{$chars}, split("", "{0,}"));
+           },
+    '+' => sub {
+               my ($self, $ch, $chars, $string)=@_;
+               unshift(@{$chars}, split("", "{1,}"));
+           },
+    '?' => sub {
+               my ($self, $ch, $chars, $string)=@_;
+               unshift(@{$chars}, split("", "{0,1}"));
+           },
+    '{' => sub {
                my ($self, $ch, $chars, $string)=@_;
                my ($n, $closed);
-               for ($n=0;$n<scalar(@{$chars});$n++)
-               {
-                   if ($chars->[$n] eq "}")
-                   {
+               for ($n=0;$n<scalar(@{$chars});$n++) {
+                   if ($chars->[$n] eq "}") {
                        $closed++;
                        last;
                    }
                }
-               if ($closed)
-               {
+               if ($closed) {
                    my $tmp;
-                   while (defined($ch=shift(@{$chars})) && ($ch ne "}"))
-                   {
+                   while (defined($ch=shift(@{$chars})) && ($ch ne "}")) {
                        croak "'$ch' inside {} not supported" if ($ch!~/[\d,]/);
                        $tmp.=$ch;
                    }
-		   if ($tmp=~/,/)
-		   {
-		       if (my ($min,$max) = $tmp =~ /^(\d*),(\d*)$/)
-		       {
-			   $min = 0 if (!length($min));
-			   $max = $self->{'_max'} if (!length($max));
-			   croak "bad range {$tmp}" if ($min>$max);
-			   if ($min == $max)
-			   {
-			       $tmp = $min;
-			   }
-			   else
-			   {
-		               $tmp = $min + int(rand($max - $min +1));
-			   }
-		       }
-		       else
-		       {
-		           croak "malformed range {$tmp}";
-		       }
-		   }
-		   if ($tmp)
-		   {
+                   if ($tmp=~/,/) {
+                       if (my ($min,$max) = $tmp =~ /^(\d*),(\d*)$/) {
+                           $min = 0 if (!length($min));
+                           $max = $self->{'_max'} if (!length($max));
+                           croak "bad range {$tmp}" if ($min>$max);
+                           if ($min == $max) {
+                               $tmp = $min;
+                           } else {
+                               $tmp = $min + int(rand($max - $min +1));
+                           }
+                       } else {
+                           croak "malformed range {$tmp}";
+                       }
+                   }
+                   if ($tmp) {
                        my $last=$string->[$#{$string}];
-                       for ($n=0;$n<($tmp-1);$n++)
-                       {
+                       for ($n=0;$n<($tmp-1);$n++) {
                            push(@{$string}, $last);
                        }
-		   }
-		   else
-		   {
-		       pop(@{$string});
-		   }
-               }
-               else
-               {
+                   } else {
+                       pop(@{$string});
+                   }
+               } else {
                    # { isn't closed, so treat it literally.
                    push(@{$string}, [$ch]);
                }
            },
 );
 
-sub new
-{
+sub new {
     my $proto=shift;
     my $class=ref($proto) || $proto;
     my $self;
@@ -227,78 +189,64 @@ sub new
 
 # Returns a random string for each regular expression given as an
 # argument, or the strings concatenated when used in a scalar context.
-sub randregex
-{
+sub randregex {
     my $self=shift;
     croak "called without a reference" if (!ref($self));
 
-    my @strings;
+    my @strings=();
 
-    while (my $pattern=shift)
-    {
-        my ($ch, @string, $string);
+    while (defined(my $pattern=shift)) {
+        my $ch;
+        my @string=();
+        my $string='';
 
         # Split the characters in the pattern
         # up into a list for easier parsing.
         my @chars=split(//, $pattern);
 
-        while (defined($ch=shift(@chars)))
-        {
-            if (defined($regch{$ch}))
-	    {
-	        $regch{$ch}->($self, $ch, \@chars, \@string);
-	    }
-            elsif ($ch=~/[\$\^\*\(\)\+\{\}\]\|\?]/)
-            {
+        while (defined($ch=shift(@chars))) {
+            if (defined($regch{$ch})) {
+                $regch{$ch}->($self, $ch, \@chars, \@string);
+            } elsif ($ch=~/[\$\^\*\(\)\+\{\}\]\|\?]/) {
                 # At least some of these probably should have special meaning.
                 carp "'$ch' not implemented.  treating literally.";
                 push(@string, [$ch]);
-            }
-            else
-            {
+            } else {
                 push(@string, [$ch]);
             }
         }
 
-        foreach $ch (@string)
-        {
+        foreach $ch (@string) {
             $string.=$ch->[int(rand(scalar(@{$ch})))];
         }
 
-	push(@strings, $string);
+        push(@strings, $string);
     }
 
     return wantarray ? @strings : join("", @strings);
 }
 
 # For compatibility with an ancient version, please ignore...
-sub from_pattern
-{
+sub from_pattern {
     my $self=shift;
     croak "called without a reference" if (!ref($self));
 
     return $self->randpattern(@_);
 }
 
-sub randpattern
-{
+sub randpattern {
     my $self=shift;
     croak "called without a reference" if (!ref($self));
 
-    my @strings;
+    my @strings=();
 
-    while (my $pattern=shift)
-    {
-        my $string;
+    while (defined(my $pattern=shift)) {
+        my $string='';
 
-        for my $ch (split(//, $pattern))
-        {
-            if (defined($self->{$ch}))
-            {
+        for my $ch (split(//, $pattern)) {
+            if (defined($self->{$ch})) {
                 $string.=$self->{$ch}->[int(rand(scalar(@{$self->{$ch}})))];
-            }
-            else
-            {
+            } else {
                 croak qq(Unknown pattern character "$ch"!);
             }
         }
@@ -308,22 +256,19 @@ sub randpattern
     return wantarray ? @strings : join("", @strings);
 }
 
-sub random_regex
-{
+sub random_regex {
     my $foo=new String::Random;
     return $foo->randregex(@_);
 }
 
-sub random_string
-{
+sub random_string {
     my($pattern,@list)=@_;
 
     my($n,$foo);
 
     $foo=new String::Random;
 
-    for ($n=0;$n<=$#list;$n++)
-    {
+    for ($n=0;$n<=$#list;$n++) {
         @{$foo->{$n}}=@{$list[$n]};
     }
 
@@ -366,12 +311,13 @@ This would output something like this:
 
   Your password is UDwp$tj5
 
-For another example, let's say you were going to generate a 
+If you are more comfortable dealing with regular expressions, the following
+code would have a similar result:
 
   use String::Random;
   $pass = new String::Random;
-  print "Your password is ", $pass->randpattern("CCcc!ccn"), "\n";
-
+  print "Your password is ",
+      $pass->randregex('[A-Z]{2}[a-z]{2}.[a-z]{2}\d'), "\n";
 
 =head2 Patterns
 

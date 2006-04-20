@@ -1,7 +1,13 @@
+Build.PL
 Changes
 MANIFEST
-Makefile.PL
-Random.pm
-test.pl
+META.yml
 TODO
 README
+lib/String/Random.pm
+t/01_use.t
+t/02_new.t
+t/03_random_string.t
+t/04_randpattern.t
+t/05_randregex.t
+t/06_random_regex.t

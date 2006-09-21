@@ -1,54 +1,61 @@
-Revision history for Perl extension String::Random.
+Revision history for Perl extension String::Random:
 
-0.21   Thu Apr 20 17:12:14 CDT 2006
-        - Modify test.pl to use Test::More.
-        - Build with Module::Build.
-        - Minor whitespace cleanup.
-        - Avoid undefined results from randregex() and randpattern().
-        - Turn on warnings in the module.
+0.22   Thu Sep 21 2006
+- Fix README to reflect current reality.
+- Random cleanup in this file.
+- Since we've broken compatibility with *really* old Perl5 anyway,
+  modernize a bit more ("our" instead of "use vars").  Also
+  explicitly require 5.6.1.
 
-0.20   Mon Sep 29 15:33:02 CDT 2003
-        - Added support for *, +, and ? in regular expressions.
+0.21   Thu Apr 20 2006
+- Modify test.pl to use Test::More.
+- Build with Module::Build.
+- Minor whitespace cleanup.
+- Avoid undefined results from randregex() and randpattern().
+- Turn on warnings in the module.
 
-0.1992 Thu Jul 25 23:54:01 CDT 2002
-        - Added support for {n,m} ranges in regular expressions.
-        - Cleaned up the initialization of @punct.
+0.20   Mon Sep 29 2003
+- Added support for *, +, and ? in regular expressions.
 
-0.1991 Thu Feb 28 00:00:56 CST 2002
-        - Added a "b" for random binary data in randpattern().
+0.1992 Thu Jul 25 2002
+- Added support for {n,m} ranges in regular expressions.
+- Cleaned up the initialization of @punct.
 
-0.199  Tue Feb 26 14:01:28 CST 2002
-        - fixed randregex() and randpattern() to Do The Right
-          Thing(TM) when called in an array or scalar context, and
-          when passed multiple arguments
-          (* WARNING *  This is an incompatible change.  Code
-          expecting the behavior of earlier versions may break.  Of
-          course, the documentation warned that this change would be
-          made, and everybody reads documentation, right?  :-)
-        - fixed use of $_ in randpattern()
-          (Unfortunately, there's still one use of $_ in a grep(), but
-          I don't see how that can be avoided, and it only happens
-          once on initialization.)
+0.1991 Thu Feb 28 2002
+- Added a "b" for random binary data in randpattern().
 
-0.198  Tue May 16 11:15:44 CDT 2000
-        - fixed \W generating "_"
-        - reorganized a bit to make it easier to add more patterns
-        - added \s and \S
-        - added two-character literals (\t, \n, \r, \f, \a, \e)
+0.199  Tue Feb 26 2002
+- fixed randregex() and randpattern() to Do The Right Thing(TM)
+  when called in an array or scalar context, and when passed
+  multiple arguments.
+  (* WARNING * This is an incompatible change. Code expecting the
+  behavior of earlier versions may break. Of course, the documentation
+  warned that this change would be made, and everybody reads
+  documentation, right? :-)
+- fixed use of $_ in randpattern().
+  (Unfortunately, there's still one use of $_ in a grep(), but I don't
+  see how that can be avoided, and it only happens once on
+  initialization.)
 
-0.197  Sat Jul 10 10:50:13 CDT 1999
-        - moved most of randregex() to %regch
-        - added random_regex() function interface
+0.198  Tue May 16 2000
+- fixed \W generating "_"
+- reorganized a bit to make it easier to add more patterns
+- added \s and \S
+- added two-character literals (\t, \n, \r, \f, \a, \e)
 
-0.195  Wed Jul  7 20:42:34 CDT 1999
-        - regex support is (at least mostly) complete
+0.197  Sat Jul 10 1999
+- moved most of randregex() to %regch
+- added random_regex() function interface
 
-0.19   Sun Jul  4 19:20:03 CDT 1999
-        - first pass of regex support
+0.195  Wed Jul  7 1999
+- regex support is (at least mostly) complete
 
-0.1    Thu Sep 10 10:35:12 CDT 1998
-        - original version
+0.19   Sun Jul  4 1999
+- first pass of regex support
 
-$Id: Changes,v 1.12 2006/04/20 22:13:00 steve Exp $
+0.1    Thu Sep 10 1998
+- original version
+
+$Id: Changes,v 1.13 2006/09/21 17:33:58 steve Exp $
 
 # vi: set ai et:

@@ -8,38 +8,39 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
-# $Id: Random.pm,v 1.3 2006/04/20 22:09:35 steve Exp $
+# $Id: Random.pm,v 1.4 2006/09/21 17:34:07 steve Exp $
 
 package String::Random;
+
+require 5.006_001;
 
 use strict;
 use warnings;
 
-use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-
+use Carp;
 use Exporter ();
 
-@ISA = qw(Exporter);
-@EXPORT_OK = qw(random_string random_regex);
-$VERSION = '0.21';
-
-use Carp;
-
-use vars qw(@upper @lower @digit @punct @any @salt @binary);
-use vars qw(%old_patterns %patterns %regch);
+our @ISA = qw(Exporter);
+our %EXPORT_TAGS = ( 'all' => [ qw(
+    &random_string
+    &random_regex
+) ] );
+our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
+our @EXPORT = ();
+our $VERSION = '0.22';
 
 # These are the various character sets.
-@upper=("A".."Z");
-@lower=("a".."z");
-@digit=("0".."9");
-@punct=map { chr($_); } (33..47,58..64,91..96,123..126);
-@any=(@upper, @lower, @digit, @punct);
-@salt=(@upper, @lower, @digit, ".", "/");
-@binary=map { chr($_) } (0..255);
+our @upper=("A".."Z");
+our @lower=("a".."z");
+our @digit=("0".."9");
+our @punct=map { chr($_); } (33..47,58..64,91..96,123..126);
+our @any=(@upper, @lower, @digit, @punct);
+our @salt=(@upper, @lower, @digit, ".", "/");
+our @binary=map { chr($_) } (0..255);
 
 # What's important is how they relate to the pattern characters.
 # These are the old patterns for randpattern/random_string.
-%old_patterns = (
+our %old_patterns = (
     'C' => [ @upper ],
     'c' => [ @lower ],
     'n' => [ @digit ],
@@ -50,7 +51,7 @@ use vars qw(%old_patterns %patterns %regch);
 );
 
 # These are the regex-based patterns.
-%patterns = (
+our %patterns = (
     # These are the regex-equivalents.
     '.' => [ @any ],
     '\d' => [ @digit ],
@@ -70,7 +71,7 @@ use vars qw(%old_patterns %patterns %regch);
 );
 
 # These characters are treated specially in randregex().
-%regch = (
+our %regch = (
    "\\" => sub {
                my ($self, $ch, $chars, $string)=@_;
                if (@{$chars}) {

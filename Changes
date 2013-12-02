@@ -3,6 +3,7 @@ Revision history for Perl extension String::Random:
 - Add t/style-trailing-space.t .
 - Update the POD in lib/String/Random.pm .
 - Add t/pod.t .
+- Convert Build.PL to Test::Run::Builder.
 
 0.22   Thu Sep 21 2006
 - Fix README to reflect current reality.

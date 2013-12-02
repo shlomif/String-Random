@@ -5,6 +5,7 @@ META.json
 META.yml
 README
 TODO
+inc/Test/Run/Builder.pm
 lib/String/Random.pm
 t/01_use.t
 t/02_new.t

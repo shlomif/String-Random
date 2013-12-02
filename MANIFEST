@@ -1,6 +1,7 @@
 Build.PL
 Changes
 MANIFEST
+META.json
 META.yml
 README
 TODO
@@ -11,5 +12,5 @@ t/03_random_string.t
 t/04_randpattern.t
 t/05_randregex.t
 t/06_random_regex.t
+t/pod.t
 t/style-trailing-space.t
-META.json

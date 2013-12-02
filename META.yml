@@ -1,19 +1,23 @@
 ---
-name: String-Random
-version: 0.22
+abstract: 'Perl module to generate random strings based on a pattern'
 author:
   - 'Steven Pritchard <steve@silug.org>'
-abstract: Perl module to generate random strings based on a pattern
+build_requires: {}
+configure_requires:
+  Module::Build: 0.40
+dynamic_config: 1
+generated_by: 'Module::Build version 0.4007, CPAN::Meta::Converter version 2.132830'
 license: perl
-resources:
-  license: http://dev.perl.org/licenses/
-requires:
-  Test::More: 0
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: String-Random
 provides:
   String::Random:
     file: lib/String/Random.pm
     version: 0.22
-generated_by: Module::Build version 0.2805
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+requires:
+  Test::More: 0
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.22

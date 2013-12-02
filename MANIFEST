@@ -2,8 +2,8 @@ Build.PL
 Changes
 MANIFEST
 META.yml
-TODO
 README
+TODO
 lib/String/Random.pm
 t/01_use.t
 t/02_new.t
@@ -11,3 +11,5 @@ t/03_random_string.t
 t/04_randpattern.t
 t/05_randregex.t
 t/06_random_regex.t
+t/style-trailing-space.t
+META.json

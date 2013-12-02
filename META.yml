@@ -1,10 +1,10 @@
 ---
 abstract: 'Perl module to generate random strings based on a pattern'
 author:
-  - 'Steven Pritchard <steve@silug.org>'
+  - 'Shlomi Fish <shlomif@cpan.org>'
 build_requires: {}
 configure_requires:
-  Module::Build: 0.40
+  Module::Build: 0.36
 dynamic_config: 1
 generated_by: 'Module::Build version 0.4007, CPAN::Meta::Converter version 2.132830'
 license: perl
@@ -17,7 +17,12 @@ provides:
     file: lib/String/Random.pm
     version: 0.22
 requires:
+  Carp: 0
+  Exporter: 0
   Test::More: 0
+  strict: 0
+  vars: 0
+  warnings: 0
 resources:
   license: http://dev.perl.org/licenses/
 version: 0.22

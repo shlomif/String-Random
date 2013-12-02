@@ -87,8 +87,11 @@ our %regch = (
                    } elsif (defined($patterns{"\\$tmp"})) {
                        $ch.=$tmp;
                        push(@{$string}, $patterns{$ch});
-                   } else {
-                       carp "'\\$tmp' being treated as literal '$tmp'";
+                   }
+                   else {
+                       if ($tmp =~ /\w/) {
+                           carp "'\\$tmp' being treated as literal '$tmp'";
+                       }
                        push(@{$string}, [$tmp]);
                    }
                } else {

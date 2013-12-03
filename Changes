@@ -1,5 +1,8 @@
 Revision history for Perl extension String::Random:
 
+0.24   Tue Dec 03 2013
+- Add keywords and a link to he repository to Build.PL / META.yml.
+
 0.23   Tue Dec 03 2013
 - Add t/style-trailing-space.t .
 - Update the POD in lib/String/Random.pm .

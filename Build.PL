@@ -13,14 +13,33 @@ my $builder = Test::Run::Builder->new(
     {
         'Module::Build'  => '0.36',
     },
+    build_requires =>
+    {
+        'Test::More'    => 0,
+    },
     requires =>
     {
         'Carp'          => 0,
         'Exporter'      => 0,
         'strict'        => 0,
-        'Test::More'    => 0,
         'warnings'      => 0,
         'vars'          => 0,
+    },
+    meta_merge =>
+    {
+        resources =>
+        {
+            repository => 'http://github.com/shlomif/perl-String-Random',
+        },
+        keywords =>
+        [
+            'generate',
+            'random',
+            'regex',
+            'regexp',
+            'regular-expression',
+            'string',
+        ],
     },
 );
 

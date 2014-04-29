@@ -70,6 +70,9 @@ our %patterns = (
     '\e' => [ "\e" ],
 );
 
+# This is used for cache of parsed range patterns in %regch
+our %parsed_range_patterns = ();
+
 # These characters are treated specially in randregex().
 our %regch = (
    "\\" => sub {
@@ -107,9 +110,19 @@ our %regch = (
                my @tmp;
                while (defined($ch=shift(@{$chars})) && ($ch ne "]")) {
                    if (($ch eq "-") && @{$chars} && @tmp) {
+                       my $begin_ch = $tmp[$#tmp];
                        $ch=shift(@{$chars});
-                       for (my $n=ord($tmp[$#tmp]);$n<ord($ch);$n++) {
-                           push(@tmp, chr($n+1));
+                       my $key = "$begin_ch-$ch";
+                       if (defined($parsed_range_patterns{$key})) {
+                           push(@tmp, @{$parsed_range_patterns{$key}});
+                       }
+                       else {
+                           my @chs;
+                           for (my $n=ord($begin_ch);$n<ord($ch);$n++) {
+                               push(@chs, chr($n+1));
+                           }
+                           $parsed_range_patterns{$key} = \@chs;
+                           push @tmp, @chs;
                        }
                    } else {
                        carp "'$ch' will be treated literally inside []"
